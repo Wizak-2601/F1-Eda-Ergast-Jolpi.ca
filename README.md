@@ -41,7 +41,29 @@ Then open:
 http://localhost:8000/pit_stop_paradox.html
 ```
 
+## Reproducing This Project (Exact Outputs)
+1) Ensure raw data exists under `data/raw/`:
+   - `data/raw/races.csv`
+   - `data/raw/race_results.csv`
+   - `data/raw/drivers.csv`
+   - `data/raw/constructors.csv`
+   - `data/raw/pits.csv`
+   - `data/raw/status.csv`
+   - `data/raw/base_table_clean.csv`
+2) Run `Analysis.ipynb` top‑to‑bottom to rebuild all derived tables and charts.
+3) Export the interactive charts to `plots/` so the blog can iframe them.  
+   The blog expects these filenames:
+   - `plots/pit_cluster.html`
+   - `plots/positions_gained_mean.html`
+   - `plots/Races_per_season.html`
+   - `plots/pits_per_season.html`
+   - `plots/positions_gained_all_seasons.html`
+   - `plots/driver_compare_interactive.html`
+   - `plots/constructor_compare_interactive.html`
+   - `plots/2013_cons_changes.html`
+   - `plots/race_compare_median_vs_pits.html`
+4) Open `pit_stop_paradox.html` via a local server (see above).
+
 ## Notes
 - Exported charts live in `plots/` (e.g., `positions_gained.html`).
 - Data files are stored under `data/`.
-
