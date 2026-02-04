@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>The Pit Stop Paradox</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.bokeh.org/bokeh/release/bokeh-3.4.1.min.css">
   <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.4.1.min.js"></script>
   <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
@@ -40,7 +43,7 @@
       inset: 0;
       background:
         linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
-        url("rain_pit.jpeg");
+        url("images/rain_pit.jpeg");
       background-size: contain;
       background-position: 60% center;
       background-repeat: no-repeat;
@@ -89,7 +92,7 @@
       border: 1px solid rgba(255, 255, 255, 0.25);
       background:
         rgba(255, 255, 255, 0.08)
-        url("Lights_out_and_away_we_go.svg")
+        url("images/Lights_out_and_away_we_go.svg")
         center / 18px 18px no-repeat;
       box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
       transition: border-color 200ms ease, transform 200ms ease, color 200ms ease,
@@ -150,6 +153,9 @@
     .deck.author {
       text-align: center;
       margin: 12px auto 0;
+      font-size: 1.35rem;
+      font-family: "Sans Serif";
+      font-style: italic;
     }
 
     .intro-strip {
@@ -558,7 +564,7 @@
       Why do pit stops — the biggest time loss in a race — sometimes create the biggest position gains?
       This story unpacks the mechanics using data, not folklore.
     </p>
-    <p class="deck author">Adarsh Karn</p>
+    <p class="deck author">An EDA blog by Adarsh Karn</p>
   </section>
 
   <div class="layout">
@@ -782,11 +788,11 @@
       </p>
       <ul>
         <li>
-          <b>Safety car laps aren’t explicitly marked</b>: The API has no <br>"Safety Car" endpoint so I had to substitute it with any Race Neutralisation conditions using Lap Time Variance.
+          <b>Safety car laps aren’t explicitly marked</b>: The API has no "Safety Car" endpoint so I had to substitute it with any Race Neutralisation conditions using Lap Time Variance.
         </li>
         
         <li>
-          <b>API rate limits slowed data collection</b>: The data source limits <br>how fast requests can be made. This particular API has a rate <br>limitation of 4 requests per second or 500 requests per hour so <br>fetching huge volumes of lap data across seasons was<br> impossible. Thats when used median pitstop metric to<br> races with high median pitstop and fetched lap data only<br> for those specific races.
+          <b>API rate limits slowed data collection</b>: The data source limits how fast requests can be made. This particular API has a rate limitation of 4 requests per second or 500 requests per hour so fetching huge volumes of lap data across seasons was impossible. Thats when used median pitstop metric to races with high median pitstop and fetched lap data only for those specific races.
         </li>
       </ul>
     </div>
