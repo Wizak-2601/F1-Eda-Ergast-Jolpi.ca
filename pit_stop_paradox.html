@@ -92,13 +92,14 @@
         url("Lights_out_and_away_we_go.svg")
         center / 18px 18px no-repeat;
       box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
-      transition: border-color 200ms ease, transform 200ms ease, color 200ms ease;
+      transition: border-color 200ms ease, transform 200ms ease, color 200ms ease,
+        background-color 200ms ease, background-image 200ms ease, box-shadow 200ms ease;
       font-weight: 600;
       font-size: 0;
     }
 
     .nav-link:hover {
-      color: var(--accent);
+      color: #D4A11E;
       border-color: var(--accent);
       transform: translateY(-2px);
     }
@@ -144,6 +145,11 @@
       font-size: 1.1rem;
       color: #E6D7A8;
       max-width: 62ch;
+    }
+
+    .deck.author {
+      text-align: center;
+      margin: 12px auto 0;
     }
 
     .intro-strip {
@@ -225,9 +231,37 @@
 
     .section-heading {
       font-family: var(--serif);
+      font-weight: 700;
       font-size: clamp(1.6rem, 2.4vw, 2.2rem);
-      margin: 0 0 10px 0;
+      margin: 0 0 14px 0;
       color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(15, 118, 110, 0.18), rgba(15, 118, 110, 0.02));
+      border: 1px solid rgba(180, 91, 14, 0.35);
+      box-shadow: 0 10px 22px rgba(156, 104, 22, 0.463);
+      position: relative;
+    }
+
+    .section-heading::before,
+    .section-heading::after {
+      content: "";
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #D4A11E;
+      box-shadow: 0 0 0 3px rgba(212, 161, 30, 0.18);
+    }
+
+    .section-heading::after {
+      width: 6px;
+      height: 6px;
+      background: #0f766e;
+      box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.2);
     }
 
     .section-desc {
@@ -253,6 +287,21 @@
     #section-2 {
       padding-top: 32px;
       padding-bottom: 32px;
+    }
+
+    #section-2 .chart-grid {
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      max-width: 1100px;
+      margin: 8px auto 0;
+    }
+
+    #section-2 .chart {
+      height: min(84vh, 760px);
+      padding: 0;
+    }
+
+    #section-2 .chart-slot {
+      padding: 0;
     }
 
     #section-1 .card.flag-green {
@@ -509,6 +558,7 @@
       Why do pit stops — the biggest time loss in a race — sometimes create the biggest position gains?
       This story unpacks the mechanics using data, not folklore.
     </p>
+    <p class="deck author">Adarsh Karn</p>
   </section>
 
   <div class="layout">
@@ -599,7 +649,7 @@
     <div class="story">
       <h2 class="section-heading">Paradox Premise</h2>
       <div class="card flag-yellow">
-        <h3>Is it even real?,the paradox?</h3>
+        <h3>Is it even real?the paradox?</h3>
         <!-- <h3>4. Constructors</h3> -->
          <p class="section-desc">
         The deployment of Safety car temporarily allows for the cheap implementation of rather costly PitStops! Here's Why:
@@ -641,7 +691,6 @@
     </div> -->
 
     </div>
-    <div class="chart-grid-title">Race Compression Signals</div>
     <div class="chart-grid">
       <div class="chart">
         <div class="chart-slot">
@@ -675,7 +724,7 @@
     <!-- <p class="section-desc">
       Zoom into a selected race to show timing, lap windows, and the strategic payoff.
     </p> -->
-    <div class="card flag-white">
+    <div class="card flag-blue">
       <h3>Data Collection</h3>
       <p>
         To study this paradox at scale,I fetched data from the Ergast F1 api maintained by the jolpi.ca(community mirror). Tens of thousands of rows worth of data was fetched to make it more data driven and fact based than race anecdotes.
@@ -785,28 +834,38 @@
           ></iframe>
         </div>
       </div>
+      <div class="chart">
+        <div class="chart-slot">
+          <iframe
+            class="plotly-graph-div"
+            style="height:100%; width:100%; border:0;"
+            src="plots/race_compare_median_vs_pits.html"
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
     </div>
   </section>
 
   <section id="section-5" class="full section">
-    <h2 class="section-heading">Final Conclusion: Bringing the Pit Stop Paradox Together</h2>
+    <h2 class="section-heading">Conclusion and Takeaways:</h2>
     <!-- <p class="section-desc">
       Summarize why the pit stop paradox repeats across seasons and what it implies for strategy.
     </p> -->
     <div class="card flag-checkered">
-      <h3>Final Conclusion</h3>
+      <h3>The Answer</h3>
       <p>
         Taken together, the analysis across drivers, teams, and multiple seasons points to a consistent and repeatable pattern rather than a one-off anomaly. What initially appears counterintuitive—that pitting can lead to gaining positions—becomes understandable once race context is taken into account.
       </p>
       <p>At the driver level, the 2013 deep-dive race offers a clear illustration:
 </p>
 <ul>
-  <li>The driver who adopted an **aggressive strategy**, pitting during periods of race compression, was able to gain positions despite losing time in the pit lane</li>
-  <li>The driver who chose to **stay out to preserve track position** ultimately lost places, as they were forced to pit later under green-flag conditions and paid the full time penalty.</li>
+  <li>The driver who adopted an aggressive strategy, pitting during periods of race compression, was able to gain positions despite losing time in the pit lane</li>
+  <li>The driver who chose to stay out to preserve track position ultimately lost places, as they were forced to pit later under green-flag conditions and paid the full time penalty.</li>
   <li>Importantly, this difference was not explained by raw pace; lap-time trends showed no dramatic speed advantage for the aggressive driver.</li>
 </ul>
       <p>
-        This same logic extends beyond individual drivers. When outcomes are aggregated at the **constructor level**, patterns emerge:
+        This same logic extends beyond individual drivers. When outcomes are aggregated at the constructor level, patterns emerge:
       </p>
       <ul>
         <li>Some teams consistently achieved net position gains across both drivers, suggesting timely and decisive pit-wall calls.</li>
@@ -822,8 +881,20 @@
         <li>The underlying relationship between race compression and strategic payoff remained intact</li>
 
       </ul>
-      <p>Taken together, these observations support the existence of the **Pit Stop Paradox**. While pit stops are normally costly, their impact changes dramatically during race neutralization. When the field is compressed, timing matters more than raw speed, and strategic decisiveness can turn an apparent disadvantage into an opportunity. This analysis does not claim that aggressive strategy always wins, but it does show that under the right conditions, the usual rules of Formula 1 strategy can—and often do—flip.
+      <p>Taken together, these observations support the existence of the Pit Stop Paradox. While pit stops are normally costly, their impact changes dramatically during race neutralization. When the field is compressed, timing matters more than raw speed, and strategic decisiveness can turn an apparent disadvantage into an opportunity. This analysis does not claim that aggressive strategy always wins, but it does show that under the right conditions, the usual rules of Formula 1 strategy can—and often do—flip.
 </p>
+    </div>
+  </section>
+
+  <section id="section-6" class="full section">
+    <h2 class="section-heading">If I Had One More Week</h2>
+    <div class="card flag-white">
+      <h3>What I Would Extend</h3>
+      <ul>
+        <li>Add explicit Safety Car and VSC labels (via external race control data) to reduce reliance on proxies.</li>
+        <li>Expand lap‑level comparisons across more races and eras to stress‑test driver and constructor patterns.</li>
+        <li>Build strategy timing simulations to separate pit timing effects from raw pace.</li>
+      </ul>
     </div>
   </section>
 
@@ -897,47 +968,7 @@
       });
     });
 
-    let scrollTarget = window.scrollY;
-    let isAnimating = false;
-
-    function animateToTarget() {
-      if (isAnimating) return;
-      isAnimating = true;
-      const startY = window.scrollY;
-      const distance = scrollTarget - startY;
-      const duration = 500;
-      const startTime = performance.now();
-
-      function step(timestamp) {
-        const elapsed = timestamp - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const eased = easeInOutCubic(progress);
-        window.scrollTo(0, startY + distance * eased);
-        if (progress < 1) {
-          window.requestAnimationFrame(step);
-        } else {
-          isAnimating = false;
-        }
-      }
-
-      window.requestAnimationFrame(step);
-    }
-
-    window.addEventListener(
-      "wheel",
-      (event) => {
-        event.preventDefault();
-        scrollTarget = Math.max(
-          0,
-          Math.min(
-            scrollTarget + event.deltaY,
-            document.documentElement.scrollHeight - window.innerHeight
-          )
-        );
-        animateToTarget();
-      },
-      { passive: false }
-    );
+    // Use native scrolling to avoid wheel jitter while keeping smooth anchor scroll.
 
     function updateNavState() {
       const triggerLine = window.innerHeight * 0.35;
