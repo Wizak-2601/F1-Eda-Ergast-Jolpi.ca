@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>The Pit Stop Paradox</title>
+  <link rel="stylesheet" href="https://cdn.bokeh.org/bokeh/release/bokeh-3.4.1.min.css">
+  <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.4.1.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #ffffff;
+      --panel: #f6f8fb;
+      --ink: #0f172a;
+      --muted: #475569;
+      --accent: #0f766e;
+      --accent-2: #1d4ed8;
+      --line: #e2e8f0;
+      --serif: "Fraunces", Georgia, serif;
+      --sans: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background-color: #000000;
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.6;
+    }
+
+    .page {
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .page::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+        url("rain_pit.jpeg");
+      background-size: contain;
+      background-position: 60% center;
+      background-repeat: no-repeat;
+      z-index: -1;
+    }
+
+    .layout {
+      position: relative;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 50%;
+      left: 16px;
+      transform: translateY(-50%);
+      padding: 10px 8px;
+      height: auto;
+      width: 40px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(20, 24, 32, 0.55);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      color: transparent;
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background:
+        rgba(255, 255, 255, 0.08)
+        url("Lights_out_and_away_we_go.svg")
+        center / 18px 18px no-repeat;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+      transition: border-color 200ms ease, transform 200ms ease, color 200ms ease;
+      font-weight: 600;
+      font-size: 0;
+    }
+
+    .nav-link:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .nav-link.active {
+      color: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 8px 22px rgba(15, 118, 110, 0.2);
+    }
+
+    .nav-link.passed {
+      background: #000000;
+      border-color: #000000;
+      background-image: none;
+    }
+
+    .main {
+      margin-left: 100px;
+      padding-right: 3vw;
+    }
+
+    .hero {
+      padding: 72px 6vw 48px 6vw;
+      border-bottom: 0;
+      background: linear-gradient(180deg, rgba(15, 118, 110, 0.08), transparent 65%);
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.75rem;
+      color: var(--accent-2);
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 4vw, 4rem);
+      margin: 12px 0 8px 0;
+      color: #C8A038;
+    }
+
+    .deck {
+      font-size: 1.1rem;
+      color: #E6D7A8;
+      max-width: 62ch;
+    }
+
+    .intro-strip {
+      padding: 0 6vw 28px 6vw;
+    }
+
+    .strip-card {
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 18px 20px 14px 20px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: #f8fafc;
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    .strip-title {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      color: #D4A11E;
+      margin-bottom: 4px;
+    }
+
+    .strip-sub {
+      font-size: 0.95rem;
+      color: #e2e8f0;
+      margin-bottom: 10px;
+    }
+
+    .strip-svg {
+      width: 100%;
+      height: auto;
+    }
+
+    .strip-svg text {
+      font-family: var(--sans);
+      font-size: 12px;
+      text-anchor: middle;
+      fill: #e2e8f0;
+    }
+
+    .strip-svg .node circle {
+      fill: #111827;
+      stroke: #d4a11e;
+      stroke-width: 2;
+    }
+
+    .strip-svg .chips rect {
+      fill: rgba(212, 161, 30, 0.15);
+      stroke: rgba(212, 161, 30, 0.6);
+      stroke-width: 1;
+    }
+
+    .strip-svg .chips text {
+      fill: #f8fafc;
+      font-size: 11px;
+    }
+
+    .scrolly {
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) minmax(320px, 1fr);
+      gap: 28px;
+      padding: 48px 6vw;
+    }
+
+    .section {
+      padding: 24px 0 8px 0;
+      opacity: 0;
+      transform: translateY(26px);
+      transition: opacity 600ms ease, transform 600ms ease;
+      scroll-margin-top: 24px;
+    }
+
+    .section.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .section-heading {
+      font-family: var(--serif);
+      font-size: clamp(1.6rem, 2.4vw, 2.2rem);
+      margin: 0 0 10px 0;
+      color: var(--accent);
+    }
+
+    .section-desc {
+      margin: 0 0 24px 0;
+      color: var(--muted);
+      max-width: 70ch;
+    }
+
+    #section-1 .section-heading {
+      margin-bottom: 6px;
+    }
+
+    #section-1 .section-heading + .card {
+      margin-top: 6px;
+    }
+
+    #section-1 .card,
+    #section-2 .card {
+      padding: 18px;
+    }
+
+    #section-1,
+    #section-2 {
+      padding-top: 32px;
+      padding-bottom: 32px;
+    }
+
+    #section-1 .card.flag-green {
+      padding-top: 28px;
+      padding-bottom: 28x;
+      min-height: 150px;
+    }
+
+    .story {
+      display: grid;
+      gap: 28px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+      transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: #94a3b8;
+      box-shadow: 0 16px 32px rgba(15, 23, 42, 0.12);
+    }
+
+    .card h3 {
+      margin: 0 0 8px 0;
+      font-family: var(--serif);
+      color: var(--accent);
+    }
+
+    .card.flag-green,
+    .card.flag-yellow,
+    .card.flag-blue,
+    .card.flag-white,
+    .card.flag-red,
+    .card.flag-black,
+    .card.flag-checkered {
+      padding-top: 22px;
+      padding-bottom: 22px;
+    }
+
+    .card.flag-green { background: #CFE8DA; border-color: #1F7A4D; }
+    .card.flag-yellow { background: #FFF6D6; border-color: #F2C94C; }
+    .card.flag-blue { background: #EAF2FD; border-color: #2F80ED; }
+    .card.flag-white { background: #F5F5F5; border-color: #BDBDBD; }
+    .card.flag-red { background: #FDEAEA; border-color: #D32F2F; }
+    .card.flag-black { background: #F2F2F2; border-color: #212121; }
+    .card.flag-checkered { background: #FFFFFF; border-color: #000000; }
+
+    .card.flag-green h3 { color: #1F7A4D; }
+    .card.flag-yellow h3 { color: #E0A800; }
+    .card.flag-blue h3 { color: #2F80ED; }
+    .card.flag-white h3 { color: #8F8F8F; }
+    .card.flag-red h3 { color: #D32F2F; }
+    .card.flag-black h3 { color: #212121; }
+    .card.flag-checkered h3 { color: #000000; }
+
+    .card.flag-green h3,
+    .card.flag-yellow h3,
+    .card.flag-blue h3,
+    .card.flag-white h3,
+    .card.flag-red h3,
+    .card.flag-black h3,
+    .card.flag-checkered h3 {
+      margin-top: 16px;
+    }
+
+    #section-2 .card p {
+      margin: 0 0 8px 0;
+    }
+
+    #section-2 .card ul {
+      margin: 8px 0 0 18px;
+      padding: 0;
+    }
+
+    #section-2 .card li {
+      margin: 4px 0;
+    }
+
+    .card.flag-green::before,
+    .card.flag-yellow::before,
+    .card.flag-blue::before,
+    .card.flag-white::before,
+    .card.flag-red::before,
+    .card.flag-black::before,
+    .card.flag-checkered::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 36px;
+      border-radius: 14px 14px 0 0;
+    }
+
+    .card.flag-green::after,
+    .card.flag-yellow::after,
+    .card.flag-blue::after,
+    .card.flag-white::after,
+    .card.flag-red::after,
+    .card.flag-black::after,
+    .card.flag-checkered::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 36px;
+      border-radius: 0 0 14px 14px;
+    }
+
+    .card.flag-green::before,
+    .card.flag-green::after { background: #7BC8A4; }
+    .card.flag-yellow::before,
+    .card.flag-yellow::after { background: #E0A800; }
+    .card.flag-blue::before,
+    .card.flag-blue::after { background: #90B9F5; }
+    .card.flag-white::before,
+    .card.flag-white::after { background: #8F8F8F; }
+    .card.flag-red::before,
+    .card.flag-red::after { background: #EF9A9A; }
+    .card.flag-black::before,
+    .card.flag-black::after { background: #6E6E6E; }
+    .card.flag-checkered::before,
+    .card.flag-checkered::after {
+      background:
+        repeating-linear-gradient(90deg, #000000 0 10px, #FFFFFF 10px 20px),
+        repeating-linear-gradient(0deg, #000000 0 10px, #FFFFFF 10px 20px);
+      background-size: 20px 20px;
+      background-blend-mode: multiply;
+    }
+
+    .chart {
+      position: sticky;
+      top: 24px;
+      height: min(78vh, 720px);
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px;
+      box-shadow: 0 16px 34px rgba(15, 23, 42, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chart-slot {
+      width: 100%;
+    }
+
+    .plotly-graph-div {
+      min-height: 320px;
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+
+    .chart-center {
+      display: flex;
+      justify-content: center;
+    }
+
+    .chart-center .chart {
+      width: min(720px, 100%);
+    }
+
+    .chart-grid-title {
+      text-align: center;
+      font-family: var(--serif);
+      color: var(--accent);
+      margin: 10px 0 14px 0;
+      font-size: 1.1rem;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--line), transparent);
+      margin: 36px 0;
+    }
+
+    .full {
+      padding: 48px 6vw;
+      display: grid;
+      gap: 20px;
+    }
+
+    .full .chart {
+      position: relative;
+      height: auto;
+    }
+
+    .callout {
+      padding: 14px 18px;
+      border-left: 4px solid var(--accent);
+      background: #ecfeff;
+      color: #0f172a;
+      border-radius: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        position: fixed;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+        height: auto;
+        width: 36px;
+        padding: 8px 6px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+      }
+      .nav {
+        flex-direction: column;
+        justify-content: center;
+        gap: 10px;
+      }
+      .main {
+        margin-left: 60px;
+        padding-right: 0;
+      }
+      .nav-link {
+        width: 24px;
+        height: 24px;
+        font-size: 0.75rem;
+      }
+      .scrolly {
+        grid-template-columns: 1fr;
+      }
+      .chart {
+        position: relative;
+        height: auto;
+      }
+      .chart-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+  <section class="hero">
+    <div class="eyebrow">F1 Strategy Analysis</div>
+    <h1>The Pit Stop Paradox</h1>
+    <p class="deck">
+      Why do pit stops — the biggest time loss in a race — sometimes create the biggest position gains?
+      This story unpacks the mechanics using data, not folklore.
+    </p>
+  </section>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Section navigation">
+      <div class="nav">
+        <a class="nav-link" href="#section-1" data-index="1" aria-label="Section 1"></a>
+        <a class="nav-link" href="#section-2" data-index="2" aria-label="Section 2"></a>
+        <a class="nav-link" href="#section-3" data-index="3" aria-label="Section 3"></a>
+        <a class="nav-link" href="#section-4" data-index="4" aria-label="Section 4"></a>
+        <a class="nav-link" href="#section-5" data-index="5" aria-label="Section 5"></a>
+      </div>
+    </nav>
+
+    <main class="main">
+  <section id="section-1" class="scrolly section">
+    <div class="story">
+      <h2 class="section-heading">Introduction: The Pit Stop Paradox</h2>
+      <div class="card flag-green">
+        <h3>Obviously!</h3>
+        <p>
+          In the Formula 1 community it is common knowledge that when drivers dive into the pits, they loses a chunk of time, and yet somehow at the chequered flag, comes out better off than before. Meanwhile, another driver stays out to protect track position, only slides backward in the race. At first glance, it doesn’t make much sense. Shouldn’t stopping during a race cost position?
+        </p>
+        <!-- <div class="callout">Key idea: position gain is driven by field compression, not raw pace.</div> -->
+      </div>
+
+      <section class="intro-strip">
+        <div class="strip-card">
+          <div class="strip-title">Strategy Timeline</div>
+          <div class="strip-sub">How race neutralization flips the pit stop cost</div>
+          <svg class="strip-svg" viewBox="0 0 980 140" role="img" aria-label="Strategy timeline strip">
+            <defs>
+              <linearGradient id="lineFade" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#d4a11e" stop-opacity="0.0"/>
+                <stop offset="12%" stop-color="#d4a11e" stop-opacity="0.6"/>
+                <stop offset="88%" stop-color="#d4a11e" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="#d4a11e" stop-opacity="0.0"/>
+              </linearGradient>
+              <marker id="arrowHead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#d4a11e" />
+              </marker>
+            </defs>
+            <line x1="60" y1="70" x2="920" y2="70" stroke="url(#lineFade)" stroke-width="3"/>
+            <line x1="135" y1="70" x2="305" y2="70" stroke="#d4a11e" stroke-width="2" marker-end="url(#arrowHead)"/>
+            <line x1="335" y1="70" x2="505" y2="70" stroke="#d4a11e" stroke-width="2" marker-end="url(#arrowHead)"/>
+            <line x1="535" y1="70" x2="705" y2="70" stroke="#d4a11e" stroke-width="2" marker-end="url(#arrowHead)"/>
+            <line x1="735" y1="70" x2="865" y2="70" stroke="#d4a11e" stroke-width="2" marker-end="url(#arrowHead)"/>
+
+            <g class="node">
+              <circle cx="120" cy="70" r="12"/>
+              <text x="120" y="30">Race Start</text>
+            </g>
+            <g class="node">
+              <circle cx="320" cy="70" r="12"/>
+              <text x="320" y="30">Safety Car</text>
+            </g>
+            <g class="node">
+              <circle cx="520" cy="70" r="12"/>
+              <text x="520" y="30">Pit Window</text>
+            </g>
+            <g class="node">
+              <circle cx="720" cy="70" r="12"/>
+              <text x="720" y="30">Restart</text>
+            </g>
+            <g class="node">
+              <circle cx="880" cy="70" r="12"/>
+              <text x="880" y="30">Net Gain</text>
+            </g>
+
+            <g class="chips">
+              <rect x="255" y="92" width="130" height="26" rx="13"/>
+              <text x="320" y="109">Field Compression</text>
+
+              <rect x="455" y="92" width="130" height="26" rx="13"/>
+              <text x="520" y="109">Cheap Stop</text>
+
+              <rect x="655" y="92" width="130" height="26" rx="13"/>
+              <text x="720" y="109">Tyre Advantage</text>
+            </g>
+          </svg>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="section-2" class="scrolly section">
+    <div class="story">
+      <h2 class="section-heading">Paradox Premise</h2>
+      <div class="card flag-yellow">
+        <h3>Is it even real?,the paradox?</h3>
+        <!-- <h3>4. Constructors</h3> -->
+         <p class="section-desc">
+        The deployment of Safety car temporarily allows for the cheap implementation of rather costly PitStops! Here's Why:
+      </p>
+        <ul>
+         <li>Field compression:
+            Safety cars bunch the entire field together, drastically reducing the gaps between cars.
+         </li>
+          <li>Reduced relative time loss:
+            When the field is compressed, the time lost during a pit stop is absorbed while everyone is circulating slowly.
+          </li>
+          <li>Shared pace constraints:
+            All drivers are limited by the same speed, so no one can exploit fresh air or raw pace advantages.
+          </li>
+          <li>Strategic synchronization:
+            Multiple teams pit at the same time, preventing individual drivers from being singled out and punished.
+          </li>
+          <!-- <li>Deferred penalties:
+            Drivers who avoid pitting during neutralization often have to pit later under green-flag conditions, paying the full time cost.
+          </li>
+          <li>Tyre advantage after the restart:
+            Fresh tyres become more valuable once racing resumes, helping drivers defend or overtake more effectively.
+            </li>
+          <li>Multiple decision points:
+            Races with more than one safety car create layered strategic choices, amplifying gains or losses from earlier calls.
+          </li> -->
+        <p>Together, these effects invert the usual pit stop logic, creating scenarios where losing time in the pits can lead to gaining positions on track.</p>
+
+        </ul>
+      </div>
+
+      <!-- <div class="card">
+        <h3>5. Across Eras</h3>
+        <p>
+          The pattern holds in 2013, 2017, 2020, and 2024 — suggesting a structural effect
+          rather than a one‑off race.
+        </p>
+      </div>
+    </div> -->
+
+    </div>
+    <div class="chart-grid-title">Race Compression Signals</div>
+    <div class="chart-grid">
+      <div class="chart">
+        <div class="chart-slot">
+          <!-- PIT STOP CLUSTERING (IFRAME) -->
+          <iframe
+            class="plotly-graph-div"
+            style="height:100%; width:100%; border:0;"
+            src="plots/pit_cluster.html"
+            loading="lazy"
+          ></iframe>
+
+        </div>
+      </div>
+      <div class="chart">
+        <div class="chart-slot">
+          <!-- POSITIONS GAINED (IFRAME) -->
+          <iframe
+            class="plotly-graph-div"
+            style="height:100%; width:100%; border:0;"
+            src="plots/positions_gained_mean.html"
+            loading="lazy"
+          ></iframe>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="section-3" class="full section">
+    <h2 class="section-heading">Analytics</h2>
+    <!-- <p class="section-desc">
+      Zoom into a selected race to show timing, lap windows, and the strategic payoff.
+    </p> -->
+    <div class="card flag-white">
+      <h3>Data Collection</h3>
+      <p>
+        To study this paradox at scale,I fetched data from the Ergast F1 api maintained by the jolpi.ca(community mirror). Tens of thousands of rows worth of data was fetched to make it more data driven and fact based than race anecdotes.
+      </p>
+    </div>
+
+    <div class="card flag-white">
+      <h3>Data Visualisation</h3>
+      <p>Once I had appropriate Race and Pitstops tables containing data from all 15 seasons I plotted these histograms to show <b>1. Number of Rcaes per season </b> and <b>2. Number of pitstops per season</b> and Violin plot which showcase the  <b>3.Positions gained per season</b></p>
+      <div class="chart-grid">
+        <div class="chart">
+          <div class="chart-slot">
+            <iframe
+              class="plotly-graph-div"
+              style="height:100%; width:100%; border:0;"
+              src="plots/Races_per_season.html"
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+        <div class="chart">
+          <div class="chart-slot">
+            <iframe
+              class="plotly-graph-div"
+              style="height:100%; width:100%; border:0;"
+              src="plots/pits_per_season.html"
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+      <div class="chart-center">
+        <div class="chart">
+          <div class="chart-slot">
+            <iframe
+              class="plotly-graph-div"
+              style="height:100%; width:100%; border:0;"
+              src="plots/positions_gained_all_seasons.html"
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+
+
+
+
+
+    <div class="card flag-red">
+      <h3>Challenges</h3>
+      <p>
+        Before moving any further I'd like to point out that like most real-world datasets, Formula 1 data isn’t perfectly packaged for analysis and I will try to highlight the two major issues I faced and how to go around them.
+      </p>
+      <ul>
+        <li>
+          <b>Safety car laps aren’t explicitly marked</b>: The API has no <br>"Safety Car" endpoint so I had to substitute it with any Race Neutralisation conditions using Lap Time Variance.
+        </li>
+        
+        <li>
+          <b>API rate limits slowed data collection</b>: The data source limits <br>how fast requests can be made. This particular API has a rate <br>limitation of 4 requests per second or 500 requests per hour so <br>fetching huge volumes of lap data across seasons was<br> impossible. Thats when used median pitstop metric to<br> races with high median pitstop and fetched lap data only<br> for those specific races.
+        </li>
+      </ul>
+    </div>
+
+  </section>
+
+  <section id="section-4" class="full section">
+    <h2 class="section-heading">Paradox's Backing </h2>
+    <div class="card flag-black">
+      <h3>The Key Metric: Positions Gained!</h3>
+      <p>
+        After dereiving all the factual data I calculated the first derieved metric : Positions_Gained which became the center piece for all the major comparisions that back this paradox.
+      <p style="text-align: center;">
+        Position Gained= Grid Position - Finishing Position</p>
+      <h3>Main Comparisions</h3>
+      <p>After getting the positions gained columns for all the races whats left to do was to do and in depth analysis backing this hypothesis and so I did. I flagged races with high average pitstops and large median gains and among those chose the British Grand Prix - 2013 to be the golden race backing up my analysis.  </p>
+      <p>For this particular race I followed two drivers ,Paul di Resta from Force India and the fan favourite Daniel Ricciardo from Torro Rosso. During Race Neutralisatio , Resta pitted and gained a massive 12 places, and finished 9th whereas Ricciardo didn't pit and lost 3 positions.Force India gained massively in this race and Toro Rosso lost big! All these can be visually seen from the interactive charts below, which allows you to compare drivers of your choice.</p>
+      <div class="chart">
+        <div class="chart-slot">
+          <iframe
+            class="plotly-graph-div"
+            style="height:100%; width:100%; border:0;"
+            src="plots/driver_compare_interactive.html"
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
+      <div class="chart">
+        <div class="chart-slot">
+          <iframe
+            class="plotly-graph-div"
+            style="height:100%; width:100%; border:0;"
+            src="plots/constructor_compare_interactive.html"
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
+      <div class="chart">
+        <div class="chart-slot">
+          <iframe
+            class="plotly-graph-div"
+            style="height:100%; width:100%; border:0;"
+            src="plots/2013_cons_changes.html"
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="section-5" class="full section">
+    <h2 class="section-heading">Final Conclusion: Bringing the Pit Stop Paradox Together</h2>
+    <!-- <p class="section-desc">
+      Summarize why the pit stop paradox repeats across seasons and what it implies for strategy.
+    </p> -->
+    <div class="card flag-checkered">
+      <h3>Final Conclusion</h3>
+      <p>
+        Taken together, the analysis across drivers, teams, and multiple seasons points to a consistent and repeatable pattern rather than a one-off anomaly. What initially appears counterintuitive—that pitting can lead to gaining positions—becomes understandable once race context is taken into account.
+      </p>
+      <p>At the driver level, the 2013 deep-dive race offers a clear illustration:
+</p>
+<ul>
+  <li>The driver who adopted an **aggressive strategy**, pitting during periods of race compression, was able to gain positions despite losing time in the pit lane</li>
+  <li>The driver who chose to **stay out to preserve track position** ultimately lost places, as they were forced to pit later under green-flag conditions and paid the full time penalty.</li>
+  <li>Importantly, this difference was not explained by raw pace; lap-time trends showed no dramatic speed advantage for the aggressive driver.</li>
+</ul>
+      <p>
+        This same logic extends beyond individual drivers. When outcomes are aggregated at the **constructor level**, patterns emerge:
+      </p>
+      <ul>
+        <li>Some teams consistently achieved net position gains across both drivers, suggesting timely and decisive pit-wall calls.</li>
+        <li> Other teams experienced losses despite similar pit stop counts, pointing to conservative or mis-timed strategy decisions.</li>
+        <li> These differences persisted even when most cars finished the race, indicating that retirements were not the primary driver of the effect.</li>
+      </ul>
+      <p>
+        Finally, to test whether this behavior was specific to one race or era, the same metrics were applied to four races from different seasons—2013, 2017, 2020, and 2024:
+      </p>
+      <ul>
+        <li> Each race showed positive or neutral median position gains.</li>
+        <li>Pit stop participation clustered around similar ranges.</li>
+        <li>The underlying relationship between race compression and strategic payoff remained intact</li>
+
+      </ul>
+      <p>Taken together, these observations support the existence of the **Pit Stop Paradox**. While pit stops are normally costly, their impact changes dramatically during race neutralization. When the field is compressed, timing matters more than raw speed, and strategic decisiveness can turn an apparent disadvantage into an opportunity. This analysis does not claim that aggressive strategy always wins, but it does show that under the right conditions, the usual rules of Formula 1 strategy can—and often do—flip.
+</p>
+    </div>
+  </section>
+
+  <!-- BOKEH SCRIPTS -->
+  {{ BOKEH_SCRIPT_1 }}
+  {{ BOKEH_SCRIPT_2 }}
+  {{ BOKEH_SCRIPT_3 }}
+    </main>
+  </div>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    let ticking = false;
+    window.addEventListener("scroll", () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const offset = window.scrollY * -0.08;
+          root.style.setProperty("--scroll-offset", offset + "px");
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+
+    const sections = document.querySelectorAll(".section");
+    const navLinks = document.querySelectorAll(".nav-link");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+          }
+        });
+      },
+      { threshold: 0.35 }
+    );
+    sections.forEach((section) => observer.observe(section));
+
+    function easeInOutCubic(t) {
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    function smoothScrollTo(targetY, duration = 300) {
+      const startY = window.scrollY;
+      const distance = targetY - startY;
+      const startTime = performance.now();
+
+      function step(timestamp) {
+        const elapsed = timestamp - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = easeInOutCubic(progress);
+        window.scrollTo(0, startY + distance * eased);
+        if (progress < 1) {
+          window.requestAnimationFrame(step);
+        }
+      }
+
+      window.requestAnimationFrame(step);
+    }
+
+    navLinks.forEach((link) => {
+      link.addEventListener("click", (event) => {
+        const href = link.getAttribute("href");
+        if (!href || !href.startsWith("#")) return;
+        const target = document.querySelector(href);
+        if (!target) return;
+        event.preventDefault();
+        const y = target.getBoundingClientRect().top + window.scrollY - 16;
+        smoothScrollTo(y, 900);
+      });
+    });
+
+    let scrollTarget = window.scrollY;
+    let isAnimating = false;
+
+    function animateToTarget() {
+      if (isAnimating) return;
+      isAnimating = true;
+      const startY = window.scrollY;
+      const distance = scrollTarget - startY;
+      const duration = 500;
+      const startTime = performance.now();
+
+      function step(timestamp) {
+        const elapsed = timestamp - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = easeInOutCubic(progress);
+        window.scrollTo(0, startY + distance * eased);
+        if (progress < 1) {
+          window.requestAnimationFrame(step);
+        } else {
+          isAnimating = false;
+        }
+      }
+
+      window.requestAnimationFrame(step);
+    }
+
+    window.addEventListener(
+      "wheel",
+      (event) => {
+        event.preventDefault();
+        scrollTarget = Math.max(
+          0,
+          Math.min(
+            scrollTarget + event.deltaY,
+            document.documentElement.scrollHeight - window.innerHeight
+          )
+        );
+        animateToTarget();
+      },
+      { passive: false }
+    );
+
+    function updateNavState() {
+      const triggerLine = window.innerHeight * 0.35;
+      let currentIndex = 1;
+      sections.forEach((section, index) => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= triggerLine) {
+          currentIndex = index + 1;
+        }
+      });
+
+      navLinks.forEach((link) => {
+        const idx = Number(link.dataset.index || 0);
+        const isPassed = currentIndex === 5 ? idx <= currentIndex : idx < currentIndex;
+        link.classList.toggle("passed", isPassed);
+        link.classList.toggle("active", idx === currentIndex);
+      });
+    }
+
+    window.addEventListener("scroll", updateNavState);
+    window.addEventListener("resize", updateNavState);
+    updateNavState();
+
+
+  </script>
+</body>
+</html>

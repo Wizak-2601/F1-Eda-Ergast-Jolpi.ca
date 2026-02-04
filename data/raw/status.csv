@@ -1,0 +1,137 @@
+,statusId,status
+0,1,Finished
+1,11,+1 Lap
+2,5,Engine
+3,12,+2 Laps
+4,3,Accident
+5,4,Collision
+6,6,Gearbox
+7,20,Spun off
+8,13,+3 Laps
+9,22,Suspension
+10,14,+4 Laps
+11,7,Transmission
+12,10,Electrical
+13,143,Lapped
+14,23,Brakes
+15,31,Retired
+16,54,Withdrew
+17,15,+5 Laps
+18,8,Clutch
+19,62,Not classified
+20,69,Fuel system
+21,16,+6 Laps
+22,2,Disqualified
+23,101,Turbo
+24,9,Hydraulics
+25,25,Overheating
+26,80,Ignition
+27,44,Oil leak
+28,37,Throttle
+29,60,Out of fuel
+30,17,+7 Laps
+31,86,Halfshaft
+32,36,Wheel
+33,51,Oil pressure
+34,48,Fuel pump
+35,24,Differential
+36,27,Tyre
+37,64,Handling
+38,18,+8 Laps
+39,95,Fuel leak
+40,130,Collision damage
+41,38,Steering
+42,21,Radiator
+43,131,Power Unit
+44,29,Puncture
+45,19,+9 Laps
+46,67,Wheel bearing
+47,98,Injection
+48,32,Fuel pressure
+49,88,+10 Laps
+50,47,Water leak
+51,91,Alternator
+52,68,Physical
+53,43,Exhaust
+54,83,Chassis
+55,26,Mechanical
+56,121,Magneto
+57,30,Driveshaft
+58,109,Axle
+59,42,Heat shield fire
+60,45,+11 Laps
+61,84,Battery
+62,99,Distributor
+63,94,Oil pump
+64,75,Power loss
+65,53,+13 Laps
+66,82,Injury
+67,55,+12 Laps
+68,111,+14 Laps
+69,108,Oil pipe
+70,41,Broken wing
+71,40,Electronics
+72,100,Driver unwell
+73,76,Vibrations
+74,112,+15 Laps
+75,142,Did not start
+76,65,Rear wing
+77,61,Wheel nut
+78,96,Excluded
+79,34,Water pressure
+80,116,+16 Laps
+81,50,+17 Laps
+82,73,Injured
+83,103,Water pump
+84,132,ERS
+85,33,Front wing
+86,126,Supercharger
+87,114,+18 Laps
+88,124,+19 Laps
+89,115,+22 Laps
+90,117,+24 Laps
+91,74,Fuel
+92,63,Pneumatics
+93,39,Technical
+94,113,+25 Laps
+95,104,Fatal accident
+96,66,Fire
+97,106,Fuel pipe
+98,105,Spark plugs
+99,140,Undertray
+100,110,Water pipe
+101,46,Wheel rim
+102,137,Damage
+103,79,Drivetrain
+104,71,Fuel rig
+105,139,Illness
+106,70,Oil line
+107,78,Safety
+108,89,Safety concerns
+109,85,Stalled
+110,49,Track rod
+111,127,+20 Laps
+112,120,+21 Laps
+113,119,+23 Laps
+114,58,+26 Laps
+115,118,+29 Laps
+116,123,+30 Laps
+117,128,+42 Laps
+118,122,+44 Laps
+119,125,+46 Laps
+120,135,Brake duct
+121,102,CV joint
+122,141,Cooling system
+123,87,Crankshaft
+124,138,Debris
+125,28,Driver Seat
+126,56,Engine fire
+127,129,Engine misfire
+128,107,Eye injury
+129,72,Launch control
+130,90,Not restarted
+131,35,Refuelling
+132,93,Safety belt
+133,136,Seat
+134,59,Tyre puncture
+135,92,Underweight
